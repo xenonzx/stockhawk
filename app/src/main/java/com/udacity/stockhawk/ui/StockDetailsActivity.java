@@ -11,10 +11,22 @@ import com.udacity.stockhawk.R;
  */
 
 public class StockDetailsActivity extends AppCompatActivity {
+    static String PASSED_STOCK_SYMBOL_KEY = "symbol";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_details);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new StockDetailsFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, getStockDetailsFragment()).commit();
+    }
+
+    StockDetailsFragment getStockDetailsFragment() {
+        StockDetailsFragment reFragment;
+        if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().containsKey(PASSED_STOCK_SYMBOL_KEY)) {
+            reFragment = StockDetailsFragment.newInstance(getIntent().getExtras().getString(PASSED_STOCK_SYMBOL_KEY));
+        } else {
+            reFragment = new StockDetailsFragment();
+        }
+        return reFragment;
     }
 }
