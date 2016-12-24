@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
@@ -83,8 +84,8 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
         //String change = dollarFormatWithPlus.format(rawAbsoluteChange);
         String change = getChange(rawAbsoluteChange);
-        String percentage = percentageFormat.format(percentageChange / 100);
-
+        //String percentage = percentageFormat.format(percentageChange / 100);
+        String percentage = getPercent(percentageChange);
         if (PrefUtils.getDisplayMode(context)
                 .equals(context.getString(R.string.pref_display_mode_absolute_key))) {
             holder.change.setText(change);
@@ -107,6 +108,26 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         return change;
     }
 
+    String getPercent(float percentageChange) {
+        Timber.d("percent change " + percentageChange);
+        percentageChange = percentageChange;
+        String percentageString = null;
+
+        if (percentageChange > 0) {
+            percentageString = String.format(context.getString(R.string.percent_with_plus), percentageChange);
+        } else if (percentageChange < 0) {
+            percentageString = String.format(context.getString(R.string.percent_with_minus), Math.abs(percentageChange));
+        } else {
+            percentageString = String.format(context.getString(R.string.percent), percentageChange);
+        }
+        return percentageString;
+    }
+
+    /*
+    *  <string name="percent_with_plus" translatable="false">+%1$.2f%</string>
+        <string name="percent_with_minus" translatable="false">-%1$.2f%</string>
+        <string name="percent" translatable="false">%1$.2f%</string>
+    */
     @Override
     public int getItemCount() {
         int count = 0;

@@ -12,15 +12,19 @@
     <string name="pref_display_mode_absolute_key" translatable="false">absolute</string>
     <string name="pref_display_mode_percentage_key" translatable="false">percentage</string>
 
-    <string name="default_stocks_yahoo" translatable="false" >YHOO</string>
+    <string name="default_stocks_yahoo" translatable="false">YHOO</string>
     <string name="default_stocks_apple" translatable="false">AAPL</string>
     <string name="default_stocks_microsoft" translatable="false">MSFT</string>
     <string name="default_stocks_facebook" translatable="false">FB</string>
 
-    <string name="dollar_with_plus"  translatable="false">+$%1$.2f</string>
+    <string name="dollar_with_plus" translatable="false">+$%1$.2f</string>
     <string name="dollar_with_minus" translatable="false">-$%1$.2f</string>
     <string name="dollar_price" translatable="false">$%1$.2f</string>
     <string name="dollar" translatable="false">$%1$.2f</string>
+
+    <string name="percent_with_plus" translatable="false">+%1$.2f%%</string>
+    <string name="percent_with_minus" translatable="false">-%1$.2f%%</string>
+    <string name="percent" translatable="false">%1$.2f%%</string>
 
     <string name="action_change_units">displayMode</string>
 
