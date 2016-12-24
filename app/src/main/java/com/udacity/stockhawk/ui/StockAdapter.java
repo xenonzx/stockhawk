@@ -68,7 +68,8 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
 
         holder.symbol.setText(cursor.getString(Contract.Quote.POSITION_SYMBOL));
-        holder.price.setText(dollarFormat.format(cursor.getFloat(Contract.Quote.POSITION_PRICE)));
+//        holder.price.setText(dollarFormat.format(cursor.getFloat(Contract.Quote.POSITION_PRICE)));
+        holder.price.setText(String.format(context.getString(R.string.dollar_price), cursor.getFloat(Contract.Quote.POSITION_PRICE)));
 
 
         float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
@@ -80,7 +81,8 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
             holder.change.setBackgroundResource(R.drawable.percent_change_pill_red);
         }
 
-        String change = dollarFormatWithPlus.format(rawAbsoluteChange);
+        //String change = dollarFormatWithPlus.format(rawAbsoluteChange);
+        String change = getChange(rawAbsoluteChange);
         String percentage = percentageFormat.format(percentageChange / 100);
 
         if (PrefUtils.getDisplayMode(context)
@@ -91,6 +93,18 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         }
 
 
+    }
+
+    String getChange(float rawAbsoluteChange) {
+        String change = null;
+        if (rawAbsoluteChange > 0) {
+            change = String.format(context.getString(R.string.dollar_with_plus), rawAbsoluteChange);
+        } else if (rawAbsoluteChange < 0) {
+            change = String.format(context.getString(R.string.dollar_with_minus), Math.abs(rawAbsoluteChange));
+        } else {
+            change = String.format(context.getString(R.string.dollar), rawAbsoluteChange);
+        }
+        return change;
     }
 
     @Override
