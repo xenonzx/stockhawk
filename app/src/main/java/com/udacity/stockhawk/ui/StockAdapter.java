@@ -69,7 +69,6 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
 
         holder.symbol.setText(cursor.getString(Contract.Quote.POSITION_SYMBOL));
-//        holder.price.setText(dollarFormat.format(cursor.getFloat(Contract.Quote.POSITION_PRICE)));
         holder.price.setText(String.format(context.getString(R.string.dollar_price), cursor.getFloat(Contract.Quote.POSITION_PRICE)));
 
 
@@ -82,9 +81,7 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
             holder.change.setBackgroundResource(R.drawable.percent_change_pill_red);
         }
 
-        //String change = dollarFormatWithPlus.format(rawAbsoluteChange);
         String change = getChange(rawAbsoluteChange);
-        //String percentage = percentageFormat.format(percentageChange / 100);
         String percentage = getPercent(percentageChange);
         if (PrefUtils.getDisplayMode(context)
                 .equals(context.getString(R.string.pref_display_mode_absolute_key))) {
@@ -110,7 +107,7 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
     String getPercent(float percentageChange) {
         Timber.d("percent change " + percentageChange);
-        percentageChange = percentageChange;
+
         String percentageString = null;
 
         if (percentageChange > 0) {
@@ -123,11 +120,6 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         return percentageString;
     }
 
-    /*
-    *  <string name="percent_with_plus" translatable="false">+%1$.2f%</string>
-        <string name="percent_with_minus" translatable="false">-%1$.2f%</string>
-        <string name="percent" translatable="false">%1$.2f%</string>
-    */
     @Override
     public int getItemCount() {
         int count = 0;
