@@ -24,7 +24,7 @@
         tools:text="12" />
 
     <TextView
-        android:id="@+id/tv_stock_percentage_change"
+        android:id="@+id/tv_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="12%" />
