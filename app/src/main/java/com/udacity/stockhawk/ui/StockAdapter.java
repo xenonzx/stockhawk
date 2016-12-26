@@ -19,7 +19,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
@@ -69,7 +68,7 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
 
         holder.symbol.setText(cursor.getString(Contract.Quote.POSITION_SYMBOL));
-        holder.price.setText(String.format(context.getString(R.string.dollar_price), cursor.getFloat(Contract.Quote.POSITION_PRICE)));
+        holder.price.setText(new FormatHelper().getDollarPrice(context, cursor.getFloat(Contract.Quote.POSITION_PRICE)));
 
 
         float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
@@ -81,8 +80,8 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
             holder.change.setBackgroundResource(R.drawable.percent_change_pill_red);
         }
 
-        String change = getChange(rawAbsoluteChange);
-        String percentage = getPercent(percentageChange);
+        String change = new FormatHelper().getChange(context, rawAbsoluteChange);
+        String percentage = new FormatHelper().getPercent(context, percentageChange);
         if (PrefUtils.getDisplayMode(context)
                 .equals(context.getString(R.string.pref_display_mode_absolute_key))) {
             holder.change.setText(change);
@@ -93,32 +92,6 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
     }
 
-    String getChange(float rawAbsoluteChange) {
-        String change = null;
-        if (rawAbsoluteChange > 0) {
-            change = String.format(context.getString(R.string.dollar_with_plus), rawAbsoluteChange);
-        } else if (rawAbsoluteChange < 0) {
-            change = String.format(context.getString(R.string.dollar_with_minus), Math.abs(rawAbsoluteChange));
-        } else {
-            change = String.format(context.getString(R.string.dollar), rawAbsoluteChange);
-        }
-        return change;
-    }
-
-    String getPercent(float percentageChange) {
-        Timber.d("percent change " + percentageChange);
-
-        String percentageString = null;
-
-        if (percentageChange > 0) {
-            percentageString = String.format(context.getString(R.string.percent_with_plus), percentageChange);
-        } else if (percentageChange < 0) {
-            percentageString = String.format(context.getString(R.string.percent_with_minus), Math.abs(percentageChange));
-        } else {
-            percentageString = String.format(context.getString(R.string.percent), percentageChange);
-        }
-        return percentageString;
-    }
 
     @Override
     public int getItemCount() {
