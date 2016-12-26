@@ -99,7 +99,7 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
             cursor.moveToFirst();
             symbol.setText(cursor.getString(Contract.Quote.POSITION_SYMBOL));
             price.setText(new FormatHelper().getDollarPrice(getActivity(), cursor.getFloat(Contract.Quote.POSITION_PRICE)));
-            history.setText(cursor.getString(Contract.Quote.POSITION_HISTORY));
+            history.setText(getFirstHistoryEntry(cursor.getString(Contract.Quote.POSITION_HISTORY)));
 
             float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
             float percentageChange = cursor.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
@@ -121,4 +121,9 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
 
     }
 
+    public String getFirstHistoryEntry(String string) {
+        String textStr[] = string.split("\\r\\n|\\n|\\r");
+        return textStr[0];
+
+    }
 }
