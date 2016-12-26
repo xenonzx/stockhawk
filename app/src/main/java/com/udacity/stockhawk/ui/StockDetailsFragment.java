@@ -7,14 +7,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.google.gson.Gson;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +46,9 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
 
     @BindView(R.id.tv_history)
     TextView history;
+
+    @BindView(R.id.chart)
+    LineChart chart;
 
     public static StockDetailsFragment newInstance(String param1) {
         StockDetailsFragment fragment = new StockDetailsFragment();
@@ -99,8 +110,13 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
             cursor.moveToFirst();
             symbol.setText(cursor.getString(Contract.Quote.POSITION_SYMBOL));
             price.setText(new FormatHelper().getDollarPrice(getActivity(), cursor.getFloat(Contract.Quote.POSITION_PRICE)));
-            history.setText(getFirstHistoryEntry(cursor.getString(Contract.Quote.POSITION_HISTORY)));
-
+            //history.setText(getFirstHistoryEntry(cursor.getString(Contract.Quote.POSITION_HISTORY)));
+            Log.v("history", "history" + new Gson().toJson(getHistoryEnties(cursor.getString(Contract.Quote.POSITION_HISTORY))));
+            ArrayList<Entry> entries=(getHistoryEnties(cursor.getString(Contract.Quote.POSITION_HISTORY)));
+            LineDataSet dataSet = new LineDataSet(entries, "Label");
+            LineData lineData = new LineData(dataSet);
+            chart.setData(lineData);
+            chart.invalidate();
             float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
             float percentageChange = cursor.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
 
@@ -121,9 +137,16 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
 
     }
 
-    public String getFirstHistoryEntry(String string) {
+    public ArrayList<Entry> getHistoryEnties(String string) {
         String textStr[] = string.split("\\r\\n|\\n|\\r");
-        return textStr[0];
+        ArrayList<Entry> entries = new ArrayList<Entry>();
+        for (int i = 0; i < textStr.length; i++) {
+            String[] temp = textStr[i].split(", ");
+            String x = temp[0];
+            String y = temp[1];
+            entries.add(new Entry(Float.parseFloat(x), Float.parseFloat(y)));
 
+        }
+        return entries;
     }
 }
