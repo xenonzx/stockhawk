@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -83,7 +84,7 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
         ButterKnife.bind(this, view);
 
         chart.setOnChartGestureListener(chartGestureListener);
-        chart.setTouchEnabled(false);
+        // chart.setTouchEnabled(false);
         if (mStockSymbol != null) {
             symbol.setText(mStockSymbol);
         }
@@ -130,8 +131,12 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
             dataSet = new LineDataSet(entries, "Label");
             dataSet.setColor(0);
             dataSet.setValueTextColor(0);
-            //dataSet.setValueFormatter(new DateAxisFormatter());
+            // dataSet.setValueFormatter(new DateAxisFormatter());
+
+            XAxis xAxis = chart.getXAxis();
+            //xAxis.setValueFormatter(new DateAxisFormatter());
             lineData = new LineData(dataSet);
+            //  lineData.setValueFormatter(new DateAxisFormatter());
             chart.setData(lineData);
             chart.invalidate();
             chart.notifyDataSetChanged();
@@ -162,6 +167,11 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
             String[] temp = textStr[i].split(", ");
             String x = temp[0];
             String y = temp[1];
+
+            //   float f = (float) ((Long.parseLong(x) / 100000) / 100000.0);
+            float f = (float) (Long.parseLong(x));
+            Log.v(TAG, "f is " + f);
+
             entries.add(new Entry(i, Float.parseFloat(y)));
 
         }
