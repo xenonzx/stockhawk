@@ -1,7 +1,9 @@
 package com.udacity.stockhawk.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -14,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +32,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
+import static com.udacity.stockhawk.sync.QuoteSyncJob.ACTION_INVALID_SYMBOL;
+import static com.udacity.stockhawk.sync.QuoteSyncJob.EXTRAS_INVALID_SYMBOL;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener, StockAdapter.StockAdapterOnClickHandler {
 
     private static final int STOCK_LOADER = 0;
@@ -40,11 +46,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     TextView error;
     private StockAdapter adapter;
 
+    private String TAG = MainActivity.class.getSimpleName();
+
     @Override
     public void onClick(String symbol) {
         Timber.d("Symbol clicked: %s", symbol);
         Intent intent = new Intent(this, StockDetailsActivity.class);
-        intent.putExtra(StockDetailsActivity.PASSED_STOCK_SYMBOL_KEY,symbol);
+        intent.putExtra(StockDetailsActivity.PASSED_STOCK_SYMBOL_KEY, symbol);
         startActivity(intent);
     }
 
@@ -186,4 +194,32 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    IntentFilter invalidSymbolFilter = new IntentFilter();
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        invalidSymbolFilter.addAction(ACTION_INVALID_SYMBOL);
+        registerReceiver(invalidSymbolBroadcastReceiver, invalidSymbolFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(invalidSymbolBroadcastReceiver);
+    }
+
+    BroadcastReceiver invalidSymbolBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.v(TAG, "onReceive" + intent.getAction());
+            if (intent != null && intent.getExtras() != null && intent.getExtras().containsKey(EXTRAS_INVALID_SYMBOL)) {
+                Log.e(TAG, "onReceive" + intent.getExtras().getString(EXTRAS_INVALID_SYMBOL));
+                Toast.makeText(context, String.format(getString(R.string.invalid_symbol),intent.getExtras().getString(EXTRAS_INVALID_SYMBOL)), Toast.LENGTH_LONG).show();
+            }
+        }
+    };
+
 }

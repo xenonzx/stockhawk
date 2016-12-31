@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
@@ -32,10 +33,14 @@ public final class QuoteSyncJob {
 
     private static final int ONE_OFF_ID = 2;
     private static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
+    public static final String ACTION_INVALID_SYMBOL = "com.udacity.stockhawk.ACTION_INVALID_SYMBOL";
+    public static final String EXTRAS_INVALID_SYMBOL = "EXTRAS_INVALID_SYMBOL";
     private static final int PERIOD = 300000;
     private static final int INITIAL_BACKOFF = 10000;
     private static final int PERIODIC_ID = 1;
     private static final int YEARS_OF_HISTORY = 2;
+
+    static String TAG = QuoteSyncJob.class.getSimpleName();
 
     private QuoteSyncJob() {
     }
@@ -66,18 +71,37 @@ public final class QuoteSyncJob {
 
             Timber.d(quotes.toString());
 
+            Log.e(TAG, "quotes");
+            Log.e(TAG, "quote is null");
+
             ArrayList<ContentValues> quoteCVs = new ArrayList<>();
 
             while (iterator.hasNext()) {
+                float price;
+                float percentChange;
+                float change;
+                Stock stock;
+                StockQuote quote;
                 String symbol = iterator.next();
 
 
-                Stock stock = quotes.get(symbol);
-                StockQuote quote = stock.getQuote();
+                try {
+                    stock = quotes.get(symbol);
+                    quote = stock.getQuote();
+                    price = quote.getPrice().floatValue();
+                    change = quote.getChange().floatValue();
+                    percentChange = quote.getChangeInPercent().floatValue();
 
-                float price = quote.getPrice().floatValue();
-                float change = quote.getChange().floatValue();
-                float percentChange = quote.getChangeInPercent().floatValue();
+                } catch (NullPointerException e) {
+                    Intent dataUpdatedIntent = new Intent(ACTION_INVALID_SYMBOL);
+                    dataUpdatedIntent.putExtra(EXTRAS_INVALID_SYMBOL, symbol);
+                    context.sendBroadcast(dataUpdatedIntent);
+                    e.printStackTrace();
+                    break;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    break;
+                }
 
                 // WARNING! Don't request historical data for a stock that doesn't exist!
                 // The request will hang forever X_x
