@@ -9,6 +9,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -17,6 +18,8 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.google.gson.Gson;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
@@ -49,6 +52,10 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
 
     @BindView(R.id.chart)
     LineChart chart;
+    LineDataSet dataSet;
+    LineData lineData;
+    ArrayList<Entry> entries;
+    private String TAG = StockDetailsFragment.class.getSimpleName();
 
     public static StockDetailsFragment newInstance(String param1) {
         StockDetailsFragment fragment = new StockDetailsFragment();
@@ -61,6 +68,9 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        lineData = new LineData();
+        dataSet = new LineDataSet(new ArrayList<Entry>(), "");
+        entries = new ArrayList<>();
         if (getArguments() != null && getArguments().containsKey(ARG_STOCK_SYMBOL)) {
             mStockSymbol = getArguments().getString(ARG_STOCK_SYMBOL);
         }
@@ -71,6 +81,9 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stock_details, container, false);
         ButterKnife.bind(this, view);
+
+        chart.setOnChartGestureListener(chartGestureListener);
+        chart.setTouchEnabled(false);
         if (mStockSymbol != null) {
             symbol.setText(mStockSymbol);
         }
@@ -106,17 +119,22 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
     }
 
     void updateUI(Cursor cursor) {
+        Log.v(TAG, "updateUI" + cursor.getCount());
         if (cursor.getCount() != 0) {
             cursor.moveToFirst();
             symbol.setText(cursor.getString(Contract.Quote.POSITION_SYMBOL));
             price.setText(new FormatHelper().getDollarPrice(getActivity(), cursor.getFloat(Contract.Quote.POSITION_PRICE)));
             //history.setText(getFirstHistoryEntry(cursor.getString(Contract.Quote.POSITION_HISTORY)));
-            Log.v("history", "history" + new Gson().toJson(getHistoryEnties(cursor.getString(Contract.Quote.POSITION_HISTORY))));
-            ArrayList<Entry> entries=(getHistoryEnties(cursor.getString(Contract.Quote.POSITION_HISTORY)));
-            LineDataSet dataSet = new LineDataSet(entries, "Label");
-            LineData lineData = new LineData(dataSet);
+            Log.v("history", "history" + new Gson().toJson(cursor.getString(Contract.Quote.POSITION_HISTORY)));
+            entries = (getHistoryEnties(cursor.getString(Contract.Quote.POSITION_HISTORY)));
+            dataSet = new LineDataSet(entries, "Label");
+            dataSet.setColor(0);
+            dataSet.setValueTextColor(0);
+            //dataSet.setValueFormatter(new DateAxisFormatter());
+            lineData = new LineData(dataSet);
             chart.setData(lineData);
             chart.invalidate();
+            chart.notifyDataSetChanged();
             float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
             float percentageChange = cursor.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
 
@@ -144,9 +162,55 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
             String[] temp = textStr[i].split(", ");
             String x = temp[0];
             String y = temp[1];
-            entries.add(new Entry(Float.parseFloat(x), Float.parseFloat(y)));
+            entries.add(new Entry(i, Float.parseFloat(y)));
 
         }
+        Log.v(TAG, "entries size " + entries.size());
         return entries;
     }
+
+    OnChartGestureListener chartGestureListener = new OnChartGestureListener() {
+        @Override
+        public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+            Log.v(TAG, "onChartGestureStart");
+        }
+
+        @Override
+        public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+            Log.v(TAG, "onChartGestureEnd");
+            chart.setData(lineData);
+            chart.invalidate();
+            chart.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onChartLongPressed(MotionEvent me) {
+            Log.v(TAG, "onChartLongPressed");
+        }
+
+        @Override
+        public void onChartDoubleTapped(MotionEvent me) {
+            Log.v(TAG, "onChartDoubleTapped");
+        }
+
+        @Override
+        public void onChartSingleTapped(MotionEvent me) {
+            Log.v(TAG, "onChartSingleTapped");
+        }
+
+        @Override
+        public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+            Log.v(TAG, "onChartFling");
+        }
+
+        @Override
+        public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+            Log.v(TAG, "onChartScale");
+        }
+
+        @Override
+        public void onChartTranslate(MotionEvent me, float dX, float dY) {
+            Log.v(TAG, "onChartTranslate");
+        }
+    };
 }
