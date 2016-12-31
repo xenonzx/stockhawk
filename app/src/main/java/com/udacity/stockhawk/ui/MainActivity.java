@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Log.v(TAG, "onReceive" + intent.getAction());
             if (intent != null && intent.getExtras() != null && intent.getExtras().containsKey(EXTRAS_INVALID_SYMBOL)) {
                 Log.e(TAG, "onReceive" + intent.getExtras().getString(EXTRAS_INVALID_SYMBOL));
-                Toast.makeText(context, String.format(getString(R.string.invalid_symbol),intent.getExtras().getString(EXTRAS_INVALID_SYMBOL)), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, String.format(getString(R.string.invalid_symbol), intent.getExtras().getString(EXTRAS_INVALID_SYMBOL)), Toast.LENGTH_LONG).show();
             }
         }
     };

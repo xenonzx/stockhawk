@@ -97,10 +97,10 @@ public final class QuoteSyncJob {
                     dataUpdatedIntent.putExtra(EXTRAS_INVALID_SYMBOL, symbol);
                     context.sendBroadcast(dataUpdatedIntent);
                     e.printStackTrace();
-                    break;
+                    continue;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    break;
+                    continue;
                 }
 
                 // WARNING! Don't request historical data for a stock that doesn't exist!
