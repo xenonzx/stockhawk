@@ -39,4 +39,7 @@
     <string name="toast_stock_added_no_connectivity">Symbol %s added. Will refresh when network available.</string>
     <string name="toast_no_connectivity">Will refresh when network available.</string>
     <string name="invalid_symbol">invalid stock symbol : %s</string>
+
+    <string name="fab_content_desc">open dialog to add new stock that you want to track</string>
+    <string name="add_stock_dialog_edit_text_content_desc">edit box to enter stock symbol that  you want to track</string>
 </resources>
