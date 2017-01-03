@@ -32,7 +32,7 @@ import yahoofinance.quotes.stock.StockQuote;
 public final class QuoteSyncJob {
 
     private static final int ONE_OFF_ID = 2;
-    private static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
+    public static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
     public static final String ACTION_INVALID_SYMBOL = "com.udacity.stockhawk.ACTION_INVALID_SYMBOL";
     public static final String EXTRAS_INVALID_SYMBOL = "EXTRAS_INVALID_SYMBOL";
     private static final int PERIOD = 300000;
