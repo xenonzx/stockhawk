@@ -1,5 +1,10 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="widget_min_height">146dp</dimen>
-    <dimen name="widget_min_width">146dp</dimen>
+    <dimen name="widget_min_height">@dimen/one_cell</dimen>
+    <dimen name="widget_min_width">@dimen/one_cell</dimen>
+
+    <dimen name="one_cell">40dp</dimen>
+    <dimen name="two_cells">40dp</dimen>
+    <dimen name="three_cells">40dp</dimen>
+
 </resources>

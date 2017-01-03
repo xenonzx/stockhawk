@@ -5,5 +5,5 @@
     android:minHeight="@dimen/widget_min_height"
     android:minWidth="@dimen/widget_min_width"
     android:previewImage="@mipmap/ic_launcher"
-    android:resizeMode="vertical"
+    android:resizeMode="vertical|horizontal"
     android:updatePeriodMillis="0" />
