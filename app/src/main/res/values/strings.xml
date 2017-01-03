@@ -42,4 +42,5 @@
 
     <string name="fab_content_desc">open dialog to add new stock that you want to track</string>
     <string name="add_stock_dialog_edit_text_content_desc">edit box to enter stock symbol that  you want to track</string>
+    <string name="widget_label">Stock Hawk</string>
 </resources>
