@@ -6,11 +6,13 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.sync.QuoteSyncJob;
 import com.udacity.stockhawk.ui.MainActivity;
+import com.udacity.stockhawk.ui.StockDetailsActivity;
 
 /**
  * Created by ahmed on 03/01/17.
@@ -41,6 +43,7 @@ public class StockWidgetProvider extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.layout_widget);
             views.setOnClickPendingIntent(R.id.tv_widget_header, getMainActivityIntent(context));
             views.setRemoteAdapter(R.id.lv_stocks, new Intent(context, DetailWidgetRemoteViewsService.class));
+            views.setPendingIntentTemplate(R.id.lv_stocks, getClickIntentTemplate(context));
             appWidgetManager.updateAppWidget(appWidgetIds[i], views);
 
         }
@@ -52,6 +55,14 @@ public class StockWidgetProvider extends AppWidgetProvider {
         PendingIntent pi = PendingIntent.getActivity(cxt, REQUEST_CODE, i, NO_FLAGS);
         return pi;
     }
+
+    PendingIntent getClickIntentTemplate(Context cxt) {
+        Intent intent = new Intent(cxt, StockDetailsActivity.class);
+        PendingIntent pendingIntentTemplate = TaskStackBuilder.create(cxt).addNextIntentWithParentStack(intent).getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        return pendingIntentTemplate;
+    }
+
+
 }
 
 

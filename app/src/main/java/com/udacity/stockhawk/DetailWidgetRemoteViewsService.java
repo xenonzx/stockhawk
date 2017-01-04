@@ -11,6 +11,9 @@ import android.widget.RemoteViewsService;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.ui.FormatHelper;
+import com.udacity.stockhawk.ui.StockDetailsActivity;
+
+import static com.udacity.stockhawk.R.id.symbol;
 
 /**
  * Created by ahmed on 04/01/17.
@@ -18,6 +21,8 @@ import com.udacity.stockhawk.ui.FormatHelper;
 
 public class DetailWidgetRemoteViewsService extends RemoteViewsService {
     String TAG = DetailWidgetRemoteViewsService.class.getSimpleName();
+    int REQUEST_CODE = 0;
+    int NO_FLAGS = 0;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -76,7 +81,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 float percentageChange = data.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
 
                 RemoteViews views = new RemoteViews(getPackageName(), R.layout.list_item_quote);
-                views.setTextViewText(R.id.symbol, stockSymbol);
+                views.setTextViewText(symbol, stockSymbol);
                 views.setTextViewText(R.id.price, new FormatHelper().getDollarPrice(DetailWidgetRemoteViewsService.this, price));
                 if (rawAbsoluteChange > 0) {
                     views.setInt(R.id.change, "setBackgroundResource", R.drawable.percent_change_pill_green);
@@ -89,7 +94,9 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 } else {
                     views.setTextViewText(R.id.change, new FormatHelper().getPercent(DetailWidgetRemoteViewsService.this, percentageChange));
                 }
+                views.setOnClickFillInIntent(R.id.ll_list_item, getFillIntent(stockSymbol));
                 return views;
+
             }
 
 
@@ -114,6 +121,12 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
             public boolean hasStableIds() {
                 //TODO
                 return false;
+            }
+
+            Intent getFillIntent(String symbol) {
+                Intent intent = new Intent();
+                intent.putExtra(StockDetailsActivity.PASSED_STOCK_SYMBOL_KEY, symbol);
+                return intent;
             }
         };
     }

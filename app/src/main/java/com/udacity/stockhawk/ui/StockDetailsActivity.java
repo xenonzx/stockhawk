@@ -11,7 +11,7 @@ import com.udacity.stockhawk.R;
  */
 
 public class StockDetailsActivity extends AppCompatActivity {
-    static String PASSED_STOCK_SYMBOL_KEY = "symbol";
+    public static String PASSED_STOCK_SYMBOL_KEY = "symbol";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
