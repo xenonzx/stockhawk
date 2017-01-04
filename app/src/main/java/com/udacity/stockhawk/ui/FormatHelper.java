@@ -24,7 +24,7 @@ public class FormatHelper {
         return change;
     }
 
-    String getPercent(Context context, float percentageChange) {
+    public String getPercent(Context context, float percentageChange) {
         Timber.d("percent change " + percentageChange);
 
         String percentageString = null;

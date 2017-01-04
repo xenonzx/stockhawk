@@ -87,7 +87,7 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 if (PrefUtils.getDisplayMode(DetailWidgetRemoteViewsService.this).equals(getString(R.string.pref_display_mode_absolute_key))) {
                     views.setTextViewText(R.id.change, new FormatHelper().getChange(DetailWidgetRemoteViewsService.this, rawAbsoluteChange));
                 } else {
-                    views.setTextViewText(R.id.change, new FormatHelper().getChange(DetailWidgetRemoteViewsService.this, percentageChange));
+                    views.setTextViewText(R.id.change, new FormatHelper().getPercent(DetailWidgetRemoteViewsService.this, percentageChange));
                 }
                 return views;
             }
