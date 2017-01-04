@@ -26,10 +26,17 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import yahoofinance.histquotes.HistoricalQuote;
+
+import static com.udacity.stockhawk.ui.DateAxisFormatter.REFRENCE_VALUE;
 
 /**
  * Created by ahmed on 24/12/16.
@@ -84,7 +91,7 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
         ButterKnife.bind(this, view);
 
         chart.setOnChartGestureListener(chartGestureListener);
-        // chart.setTouchEnabled(false);
+        chart.setTouchEnabled(false);
         if (mStockSymbol != null) {
             symbol.setText(mStockSymbol);
         }
@@ -127,14 +134,17 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
             price.setText(new FormatHelper().getDollarPrice(getActivity(), cursor.getFloat(Contract.Quote.POSITION_PRICE)));
             //history.setText(getFirstHistoryEntry(cursor.getString(Contract.Quote.POSITION_HISTORY)));
             Log.v("history", "history" + new Gson().toJson(cursor.getString(Contract.Quote.POSITION_HISTORY)));
-            entries = (getHistoryEnties(cursor.getString(Contract.Quote.POSITION_HISTORY)));
+            //entries = (getHistoryEnties(cursor.getString(Contract.Quote.POSITION_HISTORY)));
+            //getHistoricalQuotes(cursor.getString(Contract.Quote.POSITION_HISTORY));
+            entries = getHistoryEnties2(cursor.getString(Contract.Quote.POSITION_HISTORY));
             dataSet = new LineDataSet(entries, "Label");
             dataSet.setColor(0);
             dataSet.setValueTextColor(0);
-            // dataSet.setValueFormatter(new DateAxisFormatter());
+            dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+            //dataSet.setValueFormatter(new DateAxisFormatter());
 
             XAxis xAxis = chart.getXAxis();
-            //xAxis.setValueFormatter(new DateAxisFormatter());
+            xAxis.setValueFormatter(new DateAxisFormatter());
             lineData = new LineData(dataSet);
             //  lineData.setValueFormatter(new DateAxisFormatter());
             chart.setData(lineData);
@@ -161,6 +171,8 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
     }
 
     public ArrayList<Entry> getHistoryEnties(String string) {
+        SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
         String textStr[] = string.split("\\r\\n|\\n|\\r");
         ArrayList<Entry> entries = new ArrayList<Entry>();
         for (int i = 0; i < textStr.length; i++) {
@@ -168,14 +180,53 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
             String x = temp[0];
             String y = temp[1];
 
-            //   float f = (float) ((Long.parseLong(x) / 100000) / 100000.0);
-            float f = (float) (Long.parseLong(x));
-            Log.v(TAG, "f is " + f);
+            long xLong = (Long.parseLong(x));
+            long xNew = xLong - 5;
+            float xFloatNew = Float.parseFloat("" + xNew);
+            Log.v(TAG, "xLong is " + xLong);
+            Log.v(TAG, "xLong date " + ISO8601DATEFORMAT.format(new Date(xLong)));
+            Log.e(TAG, "xNew is " + xNew);
+            Log.v(TAG, "xFloatNew is " + xFloatNew);
 
-            entries.add(new Entry(i, Float.parseFloat(y)));
+            entries.add(new Entry(xFloatNew, Float.parseFloat(y)));
 
         }
         Log.v(TAG, "entries size " + entries.size());
+        return entries;
+    }
+
+    public ArrayList<HistoricalQuote> getHistoricalQuotes(String string) {
+        String textStr[] = string.split("\\r\\n|\\n|\\r");
+        ArrayList<HistoricalQuote> historicalQuotes = new ArrayList<HistoricalQuote>();
+        for (int i = 0; i < textStr.length; i++) {
+            String[] temp = textStr[i].split(", ");
+            String timeMillis = temp[0];
+            String closePrice = temp[1];
+
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(Long.parseLong(timeMillis));
+            Double d = Double.parseDouble(closePrice);
+            HistoricalQuote hq = new HistoricalQuote();
+            hq.setDate(c);
+            hq.setClose(new BigDecimal(d));
+
+            Log.v(TAG, "HistoricalQuote " + i + "  " + hq.toString());
+            historicalQuotes.add(hq);
+        }
+        Log.v(TAG, "entries size " + historicalQuotes.size());
+        return historicalQuotes;
+    }
+
+    ArrayList<Entry> getHistoryEnties2(String string) {
+        Log.v(TAG, "getHistoryEnties2 ");
+        ArrayList<HistoricalQuote> quotes = getHistoricalQuotes(string);
+        ArrayList<Entry> entries = new ArrayList<>();
+        HistoricalQuote tempHq = new HistoricalQuote();
+        for (int i = 0; i < quotes.size(); i++) {
+            tempHq = quotes.get(i);
+            long relativeX = tempHq.getDate().getTimeInMillis() - REFRENCE_VALUE;
+            Log.v(TAG, "entry " + i + " x " + relativeX + " y " + tempHq.getClose().floatValue());
+        }
         return entries;
     }
 
