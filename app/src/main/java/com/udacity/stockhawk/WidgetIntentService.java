@@ -32,6 +32,8 @@ public class WidgetIntentService extends IntentService {
         for (int i = 0; i < appWidgetIds.length; i++) {
             RemoteViews views = new RemoteViews(getPackageName(), R.layout.layout_widget);
             views.setOnClickPendingIntent(R.id.tv_widget_header, getMainActivityIntent(this));
+            //no need to check for min build version above ICE CREAM SANDWICH
+            views.setRemoteAdapter(R.id.lv_stocks, new Intent(WidgetIntentService.this, DetailWidgetRemoteViewsService.class));
             appWidgetManager.updateAppWidget(appWidgetIds[i], views);
 
         }

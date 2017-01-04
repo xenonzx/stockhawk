@@ -12,7 +12,7 @@ import timber.log.Timber;
 
 public class FormatHelper {
 
-    String getChange(Context context, float rawAbsoluteChange) {
+    public String getChange(Context context, float rawAbsoluteChange) {
         String change = null;
         if (rawAbsoluteChange > 0) {
             change = String.format(context.getString(R.string.dollar_with_plus), rawAbsoluteChange);
@@ -39,7 +39,7 @@ public class FormatHelper {
         return percentageString;
     }
 
-    String getDollarPrice(Context context, float price) {
+    public String getDollarPrice(Context context, float price) {
         Timber.d("price " + price);
         return String.format(context.getString(R.string.dollar_price), price);
     }
