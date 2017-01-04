@@ -225,7 +225,10 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
         for (int i = 0; i < quotes.size(); i++) {
             tempHq = quotes.get(i);
             long relativeX = tempHq.getDate().getTimeInMillis() - REFRENCE_VALUE;
-            Log.v(TAG, "entry " + i + " x " + relativeX + " y " + tempHq.getClose().floatValue());
+            float y = tempHq.getClose().floatValue();
+            float x = Float.parseFloat("" + relativeX);
+            Log.v(TAG, "entry " + i + " x " + x + " y " + y);
+            entries.add(new Entry(x, y));
         }
         return entries;
     }
