@@ -21,7 +21,7 @@ public class StockWidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
         Log.v(TAG, "onReceive" + intent.getAction());
         if (intent.getAction().equals(QuoteSyncJob.ACTION_DATA_UPDATED)) {
-            context.startService(new Intent(context, WidgetIntentService.class));
+            startWidgetIntentService(context);
         }
     }
 
@@ -30,6 +30,17 @@ public class StockWidgetProvider extends AppWidgetProvider {
         Log.v(TAG, "onUpdate");
         // once on update is called will make remote views object and notify all widgets with the view through passed id -through using app widget manager-
 
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+        Log.v(TAG, "onEnabled");
+        startWidgetIntentService(context);
+    }
+
+    void startWidgetIntentService(Context context) {
+        context.startService(new Intent(context, WidgetIntentService.class));
     }
 }
 
