@@ -53,7 +53,6 @@
                 android:resource="@xml/widget_provider_info" />
         </receiver>
 
-        <service android:name=".WidgetIntentService" />
         <service
             android:name=".DetailWidgetRemoteViewsService"
             android:enabled="true"
