@@ -11,6 +11,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by ahmed on 31/12/16.
@@ -56,4 +57,20 @@ public class DateAxisFormatter implements IAxisValueFormatter, IValueFormatter {
         Date d = now.getTime();
         return ISO8601DATEFORMAT.format(d);
     }
+
+    float convertToRelativeValue(Calendar c) {
+        Calendar now = Calendar.getInstance();
+        long diff = now.getTimeInMillis() - c.getTimeInMillis();
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    }
+
+    Calendar convertFromRelativeValue(float relativeValue) {
+        Calendar c = Calendar.getInstance();
+        long diff = TimeUnit.MILLISECONDS.convert((long) relativeValue, TimeUnit.DAYS);
+        Calendar now = Calendar.getInstance();
+        c.setTimeInMillis(now.getTimeInMillis() - diff);
+        return c;
+    }
+
+
 }
