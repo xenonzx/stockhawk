@@ -21,7 +21,7 @@ public class DateAxisFormatter implements IAxisValueFormatter, IValueFormatter {
     String TAG = DateAxisFormatter.class.getSimpleName();
     //the long of date of 2015 used to be subtracted from values too big  to be converted as float and this should be the solution to errors of converting float to long
     public static long REFRENCE_VALUE = getRefrenceValue();
-    private static final int YEARS_OF_HISTORY = 3;
+    public static final int YEARS_OF_HISTORY = 3;
 
     @Override
     public String getFormattedValue(float value, AxisBase axis) {

@@ -36,8 +36,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import yahoofinance.histquotes.HistoricalQuote;
 
-import static com.udacity.stockhawk.ui.DateAxisFormatter.REFRENCE_VALUE;
-
 /**
  * Created by ahmed on 24/12/16.
  */
@@ -222,10 +220,15 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
         ArrayList<HistoricalQuote> quotes = getHistoricalQuotes(string);
         ArrayList<Entry> entries = new ArrayList<>();
         HistoricalQuote tempHq = new HistoricalQuote();
+
+
         for (int i = 0; i < quotes.size(); i++) {
             tempHq = quotes.get(i);
-            long relativeX = tempHq.getDate().getTimeInMillis() - REFRENCE_VALUE;
-            relativeX = relativeX / 1000L;
+            tempHq.getDate().add(Calendar.YEAR, -DateAxisFormatter.YEARS_OF_HISTORY);
+            long relativeX = tempHq.getDate().get(Calendar.DATE);
+
+            Log.e(TAG, "date " + i+" " + tempHq.getDate().get(Calendar.DATE));
+
             float y = tempHq.getClose().floatValue();
             float x = Float.parseFloat("" + relativeX);
             Log.v(TAG, "entry " + i + " x " + x + " y " + y);
