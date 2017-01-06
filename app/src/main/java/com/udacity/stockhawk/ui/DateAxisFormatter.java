@@ -50,21 +50,19 @@ public class DateAxisFormatter implements IAxisValueFormatter, IValueFormatter {
     public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
         SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
         Log.v(TAG, "called getFormattedValue " + value);
-        Calendar now = Calendar.getInstance();
-        now.add(Calendar.YEAR, -YEARS_OF_HISTORY);
-        now.add(Calendar.DATE, (int) value);
 
-        Date d = now.getTime();
+
+        Date d = convertFromRelativeValue(value).getTime();
         return ISO8601DATEFORMAT.format(d);
     }
 
-    float convertToRelativeValue(Calendar c) {
+    public static float convertToRelativeValue(Calendar c) {
         Calendar now = Calendar.getInstance();
         long diff = now.getTimeInMillis() - c.getTimeInMillis();
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
-    Calendar convertFromRelativeValue(float relativeValue) {
+    public static Calendar convertFromRelativeValue(float relativeValue) {
         Calendar c = Calendar.getInstance();
         long diff = TimeUnit.MILLISECONDS.convert((long) relativeValue, TimeUnit.DAYS);
         Calendar now = Calendar.getInstance();

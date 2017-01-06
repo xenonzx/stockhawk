@@ -224,13 +224,11 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
 
         for (int i = 0; i < quotes.size(); i++) {
             tempHq = quotes.get(i);
-            tempHq.getDate().add(Calendar.YEAR, -DateAxisFormatter.YEARS_OF_HISTORY);
-            long relativeX = tempHq.getDate().get(Calendar.DATE);
 
-            Log.e(TAG, "date " + i+" " + tempHq.getDate().get(Calendar.DATE));
+            float relativeX = DateAxisFormatter.convertToRelativeValue(tempHq.getDate());
 
             float y = tempHq.getClose().floatValue();
-            float x = Float.parseFloat("" + relativeX);
+            float x = relativeX;
             Log.v(TAG, "entry " + i + " x " + x + " y " + y);
             entries.add(new Entry(x, y));
         }
