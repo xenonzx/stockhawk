@@ -27,7 +27,12 @@ public class DateAxisFormatter implements IAxisValueFormatter, IValueFormatter {
     public String getFormattedValue(float value, AxisBase axis) {
         SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
         Log.v(TAG, "called getFormattedValue " + value);
-        Date d = new Date(((long) value * 1000L)+ REFRENCE_VALUE);
+
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.YEAR, -YEARS_OF_HISTORY);
+        now.add(Calendar.DATE, (int) value);
+
+        Date d = now.getTime();
         return ISO8601DATEFORMAT.format(d);
     }
 
@@ -44,7 +49,11 @@ public class DateAxisFormatter implements IAxisValueFormatter, IValueFormatter {
     public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
         SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
         Log.v(TAG, "called getFormattedValue " + value);
-        Date d = new Date(((long) value * 1000L)+ REFRENCE_VALUE);
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.YEAR, -YEARS_OF_HISTORY);
+        now.add(Calendar.DATE, (int) value);
+
+        Date d = now.getTime();
         return ISO8601DATEFORMAT.format(d);
     }
 }
