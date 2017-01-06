@@ -141,12 +141,12 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
             dataSet.setColor(0);
             dataSet.setValueTextColor(0);
             dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-            //dataSet.setValueFormatter(new DateAxisFormatter());
+            dataSet.setValueFormatter(new DateAxisFormatter());
 
             XAxis xAxis = chart.getXAxis();
             xAxis.setValueFormatter(new DateAxisFormatter());
             lineData = new LineData(dataSet);
-            //  lineData.setValueFormatter(new DateAxisFormatter());
+            lineData.setValueFormatter(new DateAxisFormatter());
             chart.setData(lineData);
             chart.invalidate();
             chart.notifyDataSetChanged();
@@ -225,6 +225,7 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
         for (int i = 0; i < quotes.size(); i++) {
             tempHq = quotes.get(i);
             long relativeX = tempHq.getDate().getTimeInMillis() - REFRENCE_VALUE;
+            relativeX = relativeX / 1000L;
             float y = tempHq.getClose().floatValue();
             float x = Float.parseFloat("" + relativeX);
             Log.v(TAG, "entry " + i + " x " + x + " y " + y);
