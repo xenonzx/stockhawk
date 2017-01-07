@@ -53,8 +53,6 @@ public class StockDetailsFragment extends Fragment implements LoaderManager.Load
     @BindView(R.id.tv_stock_absolute_change)
     TextView change;
 
-    @BindView(R.id.tv_history)
-    TextView history;
 
     @BindView(R.id.chart)
     LineChart chart;
