@@ -1,5 +1,6 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
+
     <dimen name="widget_min_height">@dimen/two_cells</dimen>
     <dimen name="widget_min_width">@dimen/three_cells</dimen>
 
@@ -11,4 +12,10 @@
     <dimen name="padding_medium">8dp</dimen>
     <dimen name="padding_large">16dp</dimen>
 
+    <dimen name="margin_small">4dp</dimen>
+    <dimen name="margin_medium">8dp</dimen>
+    <dimen name="margin_large">16dp</dimen>
+
+    <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="fab_pressed_translation_z">12dp</dimen>
 </resources>
